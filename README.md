@@ -1,7 +1,7 @@
 ## Drone-forl-b
 
 # Problemformulering:
-Hvordan kan vi lave en spændende og unik kontroller til en drone? Vi vil prøve at lave en motioncontrollerede kontroller til en drone, altså hvor dronen styres af bestemte bevægelser og tegn. I projektet har vi en trello drone til rådighed.
+Hvordan kan vi lave en spændende og unik kontroller til en drone? Vi vil prøve at lave en motionkontrollerede kontroller til en drone, altså hvor dronen styres af bestemte bevægelser og tegn. I projektet har vi en trello drone til rådighed.
 
 ## Ide-genering:
 
