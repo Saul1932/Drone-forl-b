@@ -16,7 +16,7 @@ Vi har undersøgt systemet og fundet ud af, at det er muligt at kode det vha. af
 
 https://github.com/hanyazou/TelloPy
 
-Vi vil så prøve at lave en kode, der kan sende nogle specifikke outputs baseret på tegn/bevægelser til vores Tellopy kode (der så styrer selve dronen) 
+Vi vil så prøve at lave en kode, der kan sende nogle specifikke outputs baseret på tegn/bevægelser til vores Tellopy kode (der så instruerer selve dronen) 
 
 ## Flowchart:
 
