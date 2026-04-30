@@ -14,7 +14,7 @@ Som man kan se på ovenstående billede valgte vi en motionkontrollerede kontrol
 
 Vi har undersøgt systemet og fundet ud af, at det er muligt at kode det vha. af det såkaldte "Tellopy"
 
-https://github.com/hanyazou/TelloPy
+https://github.com/damiafuentes/DJITelloPy
 
 Vi vil så prøve at lave en kode, der kan sende nogle specifikke outputs baseret på tegn/bevægelser til vores Tellopy kode (der så instruerer selve dronen) 
 
