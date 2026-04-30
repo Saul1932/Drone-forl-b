@@ -1,1 +1,144 @@
+import cv2
+import mediapipe as mp
+import math
+mh  = mp.solutions.hands
+mtg = mp.solutions.drawing_utils
+mts = mp.solutions.drawing_styles
 
+model = mh.Hands(
+    static_image_mode=False,
+    max_num_hands=1,
+    min_detection_confidence=0.7,
+    min_tracking_confidence=0.6,
+)
+
+W   = 0
+TC  = 1;  TM  = 2;  TI  = 3;  TT  = 4  
+IM  = 5;  IP  = 6;  ID  = 7;  IT  = 8  
+MM  = 9;  MP_ = 10; MD  = 11; MT  = 12  
+RM  = 13; RP  = 14; RD  = 15; RT  = 16  
+PM  = 17; PP  = 18; PD  = 19; PT  = 20  
+
+def afst(a, b):
+    return math.sqrt((a.x-b.x)**2 + (a.y-b.y)**2 + (a.z-b.z)**2)
+
+def strakt(lm, tip, pip):
+    return lm[tip].y < lm[pip].y
+
+def fingre(lm):
+    t = lm[TT].x < lm[TI].x
+    i = strakt(lm, IT, IP)
+    m = strakt(lm, MT, MP_)
+    r = strakt(lm, RT, RP)
+    p = strakt(lm, PT, PP)
+    return [t, i, m, r, p]
+
+def antal(lm):
+    return sum(fingre(lm))
+
+def center(lm):
+    cx = sum(l.x for l in lm) / len(lm)
+    cy = sum(l.y for l in lm) / len(lm)
+    return cx, cy
+
+def gestus(lm):
+    fs = fingre(lm)
+    t, i, m, r, p = fs
+
+    pd = afst(lm[TT], lm[IT])
+    hs = afst(lm[W], lm[MM])
+    pr = pd / hs if hs > 0 else 1
+
+    if not any(fs):                               return "KNYTTET"
+    if all(fs):                                   return "AABEN"
+    if t and not i and not m and not r and not p: return "TOMMEL_OP"
+    if i and not m and not r and not p:           return "PEGER"
+    if i and m and not r and not p:               return "FRED"
+    if pr < 0.2:                                  return "KNIB"
+    if t and i and m and r and not p:             return "FIRE"
+    return "UKENDT"
+
+cmds = {
+    "TOMMEL_OP": "START",
+    "KNYTTET":   "LAND",
+    "AABEN":     "HOVER",
+    "PEGER":     "FREM",
+    "FRED":      "OP",
+    "KNIB":      "NED",
+    "FIRE":      "DREJ",
+}
+
+sid_cmd = None
+
+def send(g):
+    global sid_cmd
+    cmd = cmds.get(g)
+    if cmd and cmd != sid_cmd:
+        sid_cmd = cmd
+        print(f"[DRONE] {g:12s} -> {cmd}")
+
+farver = {
+    "START": (74,  222, 128),
+    "LAND":  (248, 113, 113),
+    "HOVER": (250, 204,  21),
+    "FREM":  ( 96, 165, 250),
+    "OP":    (167, 139, 250),
+    "NED":   (251, 146,  60),
+    "DREJ":  ( 45, 212, 191),
+}
+
+def hud(frm, g, c=None):
+    hj, bj = frm.shape[:2]
+    cmd    = cmds.get(g, "")
+    fv     = farver.get(cmd, (200, 200, 200))
+
+    cv2.rectangle(frm, (0, 0), (bj, 50), (20, 20, 20), -1)
+    cv2.putText(frm, f"Gestus: {g}",    (12, 32),      cv2.FONT_HERSHEY_SIMPLEX, 0.8, fv, 2)
+    if cmd:
+        cv2.putText(frm, f"CMD: {cmd}", (bj-220, 32),  cv2.FONT_HERSHEY_SIMPLEX, 0.8, fv, 2)
+    if c:
+        cv2.drawMarker(frm, (int(c[0]*bj), int(c[1]*hj)), fv, cv2.MARKER_CROSS, 20, 2)
+    cv2.putText(frm, "Q = afslut", (12, hj-12), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (120,120,120), 1)
+
+def main():
+    cam = cv2.VideoCapture(0)
+    cam.set(cv2.CAP_PROP_FRAME_WIDTH,  640)
+    cam.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
+
+    print("[INFO] Haard-tracking startet. Tryk Q for at afslutte.")
+
+    while True:
+        ok, frm = cam.read()
+        if not ok:
+            break
+
+        frm = cv2.flip(frm, 1)
+        rgb = cv2.cvtColor(frm, cv2.COLOR_BGR2RGB)
+        res = model.process(rgb)
+
+        g = "INGEN_HAAND"
+        c = None
+
+        if res.multi_hand_landmarks:
+            for hlm in res.multi_hand_landmarks:
+                mtg.draw_landmarks(frm, hlm, mh.HAND_CONNECTIONS,
+                    mts.get_default_hand_landmarks_style(),
+                    mts.get_default_hand_connections_style())
+                lm = hlm.landmark
+                g  = gestus(lm)
+                c  = center(lm)
+                send(g)
+
+        hud(frm, g, c)
+        cv2.imshow("Drone Haand Kontrol", frm)
+
+        if cv2.waitKey(1) & 0xFF == ord('q'):
+            break
+
+    cam.release()
+    cv2.destroyAllWindows()
+    print("[INFO] Stoppet.")
+
+
+if __name__ == "__main__":
+    main()
