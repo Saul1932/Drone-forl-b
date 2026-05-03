@@ -20,7 +20,14 @@ Vi vil så prøve at lave en kode, der kan sende nogle specifikke outputs basere
 
 ## Skitse
 
+<img width="1339" height="342" alt="image" src="https://github.com/user-attachments/assets/4384da1c-8e81-4577-a1bd-427cc567d5c0" />
+
+
+
 ## Flowchart:
+
+<img width="164" height="346" alt="image" src="https://github.com/user-attachments/assets/a263ea02-ba71-42d3-a6a9-f288eeb61493" />
+
 
 ## Blokdiagram
 
