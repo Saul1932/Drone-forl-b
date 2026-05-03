@@ -18,7 +18,11 @@ https://github.com/damiafuentes/DJITelloPy
 
 Vi vil så prøve at lave en kode, der kan sende nogle specifikke outputs baseret på tegn/bevægelser til vores Tellopy kode (der så instruerer selve dronen) 
 
+## Skitse
+
 ## Flowchart:
+
+## Blokdiagram
 
 
 
