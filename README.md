@@ -31,6 +31,8 @@ Vi vil så prøve at lave en kode, der kan sende nogle specifikke outputs basere
 
 ## Blokdiagram
 
+<img width="889" height="615" alt="image" src="https://github.com/user-attachments/assets/58677542-384e-42df-a60d-326eb40e02e3" />
+
 
 
 ## Links:
