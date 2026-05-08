@@ -36,7 +36,11 @@ Vi vil så prøve at lave en kode, der kan sende nogle specifikke outputs basere
 ## Brugertest
 
 Kort introduktion (uden hjælp til at lære tegnene, der instruere dronen); brugeren skal selv finde ud af det.
-Prøver de forskellige funktioner (indtil brugeren har fundet ud af det), vi noterer om tegnene til de forskellige funktioner passer med det brugeren forventer (skriv lige om lidt)
+Prøver de forskellige funktioner (indtil brugeren har fundet ud af det), vi noterer om tegnene til de forskellige funktioner passer med det brugeren forventer.
+
+Under brugertesten fik brugeren hurtigt ud af kommandoerne til at flyve henholdsvist fremad, op, ned, højre og venstre. Men havde problemer med at flyve tilbage, da tegnet/kommandoen ikke var lige til. Hermed skal vi få forbedrede tegnet, og gøre det mere klart/naturligt at tegnet passer til at gå tilbage. 
+
+
 
 
 
