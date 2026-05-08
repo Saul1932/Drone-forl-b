@@ -33,10 +33,17 @@ Vi vil så prøve at lave en kode, der kan sende nogle specifikke outputs basere
 
 <img width="889" height="615" alt="image" src="https://github.com/user-attachments/assets/58677542-384e-42df-a60d-326eb40e02e3" />
 
+## Brugertest
+
+Kort introduktion (uden hjælp til at lære tegnene, der instruere dronen); brugeren skal selv finde ud af det.
+Prøver de forskellige funktioner (indtil brugeren har fundet ud af det), vi noterer om tegnene til de forskellige funktioner passer med det brugeren forventer (skriv lige om lidt)
+
 
 
 ## Links:
 https://miro.com/welcomeonboard/Nkd4T2lHaHVJV3BDUEt2Ui92aG5HSmE5VVE5ZzN5L3FqaWY5a2orcnB4cTZ2ay8vUVJ3SG1XRGVvTFp5aDhEVzJZMlR3eklPN1QyQjZpdnZQNUcya200Tm5XY29ZNDg3ZG5tbklJZ2RlcnVySjA5dFNnR09EWThWLzlHdDRXSHdzVXVvMm53MW9OWFg5bkJoVXZxdFhRPT0hdjE=?share_link_id=649122413320
+
+
 
 
 
