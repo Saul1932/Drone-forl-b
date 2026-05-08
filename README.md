@@ -28,6 +28,18 @@ Vi vil så prøve at lave en kode, der kan sende nogle specifikke outputs basere
 
 <img width="164" height="346" alt="image" src="https://github.com/user-attachments/assets/a263ea02-ba71-42d3-a6a9-f288eeb61493" />
 
+## 3-lagsmodellen
+
+* Præsentationslag:
+  Dronens kamera opfanger bestemte tegn, og sender det videre til logiklaget
+* Datalaget:
+  Opbevarer de forskellige tegns definitioner (f.eks. hvor mange fingre et bestemt tegn skal bruge)
+* Logiklaget:
+  De bestemte/specifikke tegn oversættes til bestemte bevægelser vha. definitioner, der er lagret i datalaget. Denne oversættelse sendes tilbage til præsentationslaget og udføres! 
+
+
+
+
 
 ## Blokdiagram
 
