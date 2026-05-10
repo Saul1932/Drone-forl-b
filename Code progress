@@ -11,7 +11,7 @@ from collections import deque
 from djitellopy import Tello
 
 RC_HASTIGHED       = 40
-BUFFER_STØRRELSE   = 7   # mindre buffer = hurtigere respons på ny hånd
+BUFFER_STØRRELSE   = 7 
 BUFFER_GRÆNSE      = 5
 AFTAGNING_HOLD     = 2.0
 FPS_MÅL            = 30
@@ -26,7 +26,7 @@ GESTUS_TILBAGE  = "tilbage"
 GESTUS_STOP     = "stop"
 GESTUS_LAND     = "land"
 
-LANDING_HOLD    = 2.0   # sekunder lukket næve for at lande
+LANDING_HOLD    = 2.0   
 
 def _afstand(a, b) -> float:
     return math.hypot(a.x - b.x, a.y - b.y)
@@ -39,7 +39,7 @@ def klassificer_gestus(lm, er_spejlet: bool = True):
     tommel_udstrakt = _afstand(lm[4],  lm[17]) > _afstand(lm[3], lm[17])
     åbne_fingre     = sum([pege_udstrakt, lang_udstrakt, ring_udstrakt, lille_udstrakt])
     if åbne_fingre == 0 and not tommel_udstrakt:
-        return GESTUS_LAND   # lukket næve — bruges til landing-hold når flyver
+        return GESTUS_LAND  
     if åbne_fingre >= 4:
         return GESTUS_FREM
     if pege_udstrakt and lang_udstrakt and not ring_udstrakt and not lille_udstrakt:
@@ -77,7 +77,7 @@ class GestusBuffer:
         mest_almindelig = max(antal, key=lambda k: antal[k])
         maks_antal = antal[mest_almindelig]
         if maks_antal >= self._grænse and mest_almindelig is not None:
-            # Deduplikér ikke GESTUS_FREM/LAND — deres hold-timere skal løbe kontinuerligt
+
             if mest_almindelig != self._sidst or mest_almindelig in (GESTUS_FREM, GESTUS_LAND):
                 self._sidst = mest_almindelig
                 self._buffer.clear()
@@ -114,23 +114,23 @@ def gestus_til_rc(gestus) -> tuple:
         GESTUS_HØJRE:   (hast,  0,    0,     0),
         GESTUS_FREM:    (0,     hast, 0,     0),
         GESTUS_TILBAGE: (0,    -hast, 0,     0),
-        GESTUS_STOP:    (0,     0,    0,     0),  # hover
-        GESTUS_LAND:    (0,     0,    0,     0),  # hover mens landing-hold tæller
-        GESTUS_INGEN:   (0,     0,    0,     0),  # hover — ingen hånd = hold position
+        GESTUS_STOP:    (0,     0,    0,     0),  
+        GESTUS_LAND:    (0,     0,    0,     0), 
+        GESTUS_INGEN:   (0,     0,    0,     0), 
     }
     return kortlægning.get(gestus, (0, 0, 0, 0))
 
 GESTUS_ETIKETTER = {
-    GESTUS_OP:      "↑  OP",
-    GESTUS_NED:     "↓  NED",
-    GESTUS_VENSTRE: "←  VENSTRE",
-    GESTUS_HØJRE:   "→  HØJRE",
-    GESTUS_FREM:    "▶  FREM",
-    GESTUS_TILBAGE: "◀  TILBAGE",
-    GESTUS_STOP:    "■  STOP (hover)",
-    GESTUS_LAND:    "✋ LAND (hold…)",
-    GESTUS_INGEN:   "·  (hover)",
-    None:           "Venter...",
+    GESTUS_OP:      "OP",
+    GESTUS_NED:     "NED",
+    GESTUS_VENSTRE: "VENSTRE",
+    GESTUS_HØJRE:   "HØJRE",
+    GESTUS_FREM:    "FREM",
+    GESTUS_TILBAGE: "TILBAGE",
+    GESTUS_STOP:    "hover",
+    GESTUS_LAND:    "LAND",
+    GESTUS_INGEN:   "hover",
+    None:           "Venter",
 }
 
 def tegn_hud(billede, gestus, batteri: int, flyver: bool,
@@ -147,13 +147,11 @@ def tegn_hud(billede, gestus, batteri: int, flyver: bool,
     etiket = GESTUS_ETIKETTER.get(gestus, str(gestus))
     cv2.putText(billede, "GESTUS:", (20, 80), cv2.FONT_HERSHEY_SIMPLEX, 0.55, (180, 180, 180), 1)
     cv2.putText(billede, etiket, (20, 115), cv2.FONT_HERSHEY_SIMPLEX, 1.0, (80, 255, 150), 2)
-    # Takeoff progress bar
     if not flyver and aftagnings_fremdrift > 0:
         søjle_b = int(300 * aftagnings_fremdrift)
         cv2.rectangle(billede, (20, 140), (320, 158), (50, 50, 50), -1)
         cv2.rectangle(billede, (20, 140), (20 + søjle_b, 158), (0, 200, 255), -1)
         cv2.putText(billede, "Hold ÅBEN HÅND for at lette…", (20, 182), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (200, 200, 200), 1)
-    # Landing progress bar
     if flyver and landings_fremdrift > 0:
         søjle_b = int(300 * landings_fremdrift)
         cv2.rectangle(billede, (20, 140), (320, 158), (50, 50, 50), -1)
@@ -178,13 +176,11 @@ def main():
         base_options=basis_indstillinger,
         running_mode=mp_vision.RunningMode.VIDEO,
         num_hands=1,
-        min_hand_detection_confidence=0.3,   # lavere = finder hænder lettere
+        min_hand_detection_confidence=0.3,
         min_hand_presence_confidence=0.3,
-        min_tracking_confidence=0.2,          # holder tracking ved dårlig belysning
+        min_tracking_confidence=0.2,         
     )
     hånds_model = HandLandmarker.create_from_options(lm_indstillinger)
-
-    # CLAHE til kontrastforbedring i dårlig belysning
     clahe = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(8, 8))
 
     drone = Tello()
@@ -226,8 +222,6 @@ def main():
 
             billede = cv2.flip(billede, 1)
 
-            # --- Billedforbehandling for bedre hånd-detektion ---
-            # 1. Skaler ned til 640px bredde — MediaPipe er hurtigere og mere stabil
             h_orig, w_orig = billede.shape[:2]
             skala = 640 / w_orig if w_orig > 640 else 1.0
             if skala < 1.0:
@@ -235,12 +229,10 @@ def main():
             else:
                 detect_billede = billede
 
-            # 2. CLAHE kontrast på Y-kanalen (YCrCb) — hjælper i dårlig/ujævn belysning
             ycrcb = cv2.cvtColor(detect_billede, cv2.COLOR_BGR2YCrCb)
             ycrcb[:, :, 0] = clahe.apply(ycrcb[:, :, 0])
             detect_billede = cv2.cvtColor(ycrcb, cv2.COLOR_YCrCb2BGR)
 
-            # 3. Let skarphed — fremhæver fingerkonturerne
             skarp_kerne = np.array([[0, -0.5, 0], [-0.5, 3, -0.5], [0, -0.5, 0]])
             detect_billede = cv2.filter2D(detect_billede, -1, skarp_kerne)
 
@@ -253,7 +245,6 @@ def main():
                 resultater  = hånds_model.detect_for_video(mp_billede, tidsstempel)
                 if resultater.hand_landmarks:
                     lm = resultater.hand_landmarks[0]
-                    # Landmarks er normaliserede (0-1) så de passer direkte på originalen
                     tegn_hånd(billede, lm)
                     rå_gestus = klassificer_gestus(lm, er_spejlet=True)
             except Exception as e:
